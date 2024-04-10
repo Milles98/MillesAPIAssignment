@@ -12,6 +12,7 @@ using System.Text;
 
 namespace AdvertisementAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AdsController : ControllerBase
