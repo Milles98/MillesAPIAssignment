@@ -12,19 +12,31 @@ using System.Text;
 
 namespace AdvertisementAPI.Controllers
 {
+    /// <summary>
+    /// Controller for ads
+    /// </summary>
+    /// <param name="context"></param>
+    /// <param name="configuration"></param>
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AdsController(AdContext context, IConfiguration configuration) : ControllerBase
     {
-        //Get all ads, api/ads
+        /// <summary>
+        /// Get all ads
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Ad>>> GetAds()
         {
             return await context.Ads.ToListAsync();
         }
 
-        //Get ad by id, example api/ads/5
+        /// <summary>
+        /// Get a specific ad
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Ad>> GetAd(int id)
         {
@@ -38,7 +50,11 @@ namespace AdvertisementAPI.Controllers
             return Ok(ad);
         }
 
-        //Create ad, api/ads
+        /// <summary>
+        /// Create a new ad
+        /// </summary>
+        /// <param name="adInput"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<ActionResult<Ad>> PostAd(AdInputModel adInput)
         {
@@ -54,7 +70,12 @@ namespace AdvertisementAPI.Controllers
             return CreatedAtAction("GetAd", new { id = ad.Id }, ad);
         }
 
-        //Update ad, api/ads/5
+        /// <summary>
+        /// Update an ad
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="adInput"></param>
+        /// <returns></returns>
         [HttpPut("{id:int}")]
         public async Task<IActionResult> PutAd(int id, AdInputModel adInput)
         {
@@ -87,9 +108,14 @@ namespace AdvertisementAPI.Controllers
             return Ok();
         }
 
-        // Partial update ad, api/ads/5
+        /// <summary>
+        /// Patch an ad
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="patchDoc"></param>
+        /// <returns></returns>
         [HttpPatch("{id:int}")]
-        public async Task<IActionResult> PatchAd(int id, JsonPatchDocument<AdInputModel> patchDoc)
+        public async Task<IActionResult> PatchAd(int id, JsonPatchDocument<AdInputModel>? patchDoc)
         {
             if (patchDoc == null)
             {
@@ -111,7 +137,7 @@ namespace AdvertisementAPI.Controllers
 
             patchDoc.ApplyTo(adToPatch, error =>
             {
-                string path = error.AffectedObject.GetType().Name;
+                var path = error.AffectedObject.GetType().Name;
                 ModelState.AddModelError(path, error.ErrorMessage);
             });
 
@@ -143,7 +169,11 @@ namespace AdvertisementAPI.Controllers
             return NoContent();
         }
 
-        //Delete ad, api/ads/5
+        /// <summary>
+        /// Delete an ad
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteAd(int id)
         {
@@ -164,6 +194,11 @@ namespace AdvertisementAPI.Controllers
             return context.Ads.Any(e => e.Id == id);
         }
 
+        /// <summary>
+        /// Login to retrieve JWT token
+        /// </summary>
+        /// <param name="login"></param>
+        /// <returns></returns>
         [AllowAnonymous]
         [HttpPost("login")]
         public IActionResult Login(LoginModel login)
@@ -174,16 +209,16 @@ namespace AdvertisementAPI.Controllers
             }
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(configuration["Jwt:Key"]); // Your secret key
+            var key = Encoding.ASCII.GetBytes(configuration["Jwt:Key"] ?? string.Empty); 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Name, login.Username)
                 }),
-                Expires = DateTime.UtcNow.AddDays(7), // Token validity period
-                Issuer = configuration["Jwt:Issuer"], // Setting the Issuer
-                Audience = configuration["Jwt:Audience"], // Setting the Audience to match the Issuer for simplicity
+                Expires = DateTime.UtcNow.AddDays(7), 
+                Issuer = configuration["Jwt:Issuer"], 
+                Audience = configuration["Jwt:Audience"],
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
