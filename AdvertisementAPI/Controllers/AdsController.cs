@@ -177,23 +177,22 @@ namespace AdvertisementAPI.Controllers
         [HttpPost("login")]
         public IActionResult Login(LoginModel login)
         {
-            // Här ska du verifiera användarnamnet och lösenordet. Eftersom detta bara är ett exempel,
-            // verifierar jag bara att användarnamnet och lösenordet inte är tomma.
-            // I en riktig applikation skulle du kolla upp användaren i din databas och verifiera lösenordet.
             if (string.IsNullOrEmpty(login.Username) || string.IsNullOrEmpty(login.Password))
             {
                 return Unauthorized();
             }
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]); // Din hemliga nyckel
+            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]); // Your secret key
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-            new Claim(ClaimTypes.Name, login.Username)
+                    new Claim(ClaimTypes.Name, login.Username)
                 }),
-                Expires = DateTime.UtcNow.AddDays(7), // Token giltighetstid
+                Expires = DateTime.UtcNow.AddDays(7), // Token validity period
+                Issuer = _configuration["Jwt:Issuer"], // Setting the Issuer
+                Audience = _configuration["Jwt:Audience"], // Setting the Audience to match the Issuer for simplicity
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
