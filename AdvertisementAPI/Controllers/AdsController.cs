@@ -15,29 +15,20 @@ namespace AdvertisementAPI.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class AdsController : ControllerBase
+    public class AdsController(AdContext context, IConfiguration configuration) : ControllerBase
     {
-        private readonly AdContext _context;
-        private readonly IConfiguration _configuration;
-
-        public AdsController(AdContext context, IConfiguration configuration)
-        {
-            _context = context;
-            _configuration = configuration;
-        }
-
         //Get all ads, api/ads
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Ad>>> GetAds()
         {
-            return await _context.Ads.ToListAsync();
+            return await context.Ads.ToListAsync();
         }
 
         //Get ad by id, example api/ads/5
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<ActionResult<Ad>> GetAd(int id)
         {
-            var ad = await _context.Ads.FindAsync(id);
+            var ad = await context.Ads.FindAsync(id);
 
             if (ad == null)
             {
@@ -57,17 +48,17 @@ namespace AdvertisementAPI.Controllers
                 Description = adInput.Description
             };
 
-            _context.Ads.Add(ad);
-            await _context.SaveChangesAsync();
+            context.Ads.Add(ad);
+            await context.SaveChangesAsync();
 
             return CreatedAtAction("GetAd", new { id = ad.Id }, ad);
         }
 
         //Update ad, api/ads/5
-        [HttpPut("{id}")]
+        [HttpPut("{id:int}")]
         public async Task<IActionResult> PutAd(int id, AdInputModel adInput)
         {
-            var ad = await _context.Ads.FindAsync(id);
+            var ad = await context.Ads.FindAsync(id);
 
             if (ad == null)
             {
@@ -79,7 +70,7 @@ namespace AdvertisementAPI.Controllers
 
             try
             {
-                await _context.SaveChangesAsync();
+                await context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -97,7 +88,7 @@ namespace AdvertisementAPI.Controllers
         }
 
         // Partial update ad, api/ads/5
-        [HttpPatch("{id}")]
+        [HttpPatch("{id:int}")]
         public async Task<IActionResult> PatchAd(int id, JsonPatchDocument<AdInputModel> patchDoc)
         {
             if (patchDoc == null)
@@ -105,7 +96,7 @@ namespace AdvertisementAPI.Controllers
                 return BadRequest();
             }
 
-            var ad = await _context.Ads.FindAsync(id);
+            var ad = await context.Ads.FindAsync(id);
 
             if (ad == null)
             {
@@ -135,7 +126,7 @@ namespace AdvertisementAPI.Controllers
 
             try
             {
-                await _context.SaveChangesAsync();
+                await context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -153,24 +144,24 @@ namespace AdvertisementAPI.Controllers
         }
 
         //Delete ad, api/ads/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteAd(int id)
         {
-            var ad = await _context.Ads.FindAsync(id);
+            var ad = await context.Ads.FindAsync(id);
             if (ad == null)
             {
                 return NotFound();
             }
 
-            _context.Ads.Remove(ad);
-            await _context.SaveChangesAsync();
+            context.Ads.Remove(ad);
+            await context.SaveChangesAsync();
 
             return Ok();
         }
 
         private bool AdExists(int id)
         {
-            return _context.Ads.Any(e => e.Id == id);
+            return context.Ads.Any(e => e.Id == id);
         }
 
         [AllowAnonymous]
@@ -183,7 +174,7 @@ namespace AdvertisementAPI.Controllers
             }
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]); // Your secret key
+            var key = Encoding.ASCII.GetBytes(configuration["Jwt:Key"]); // Your secret key
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
@@ -191,8 +182,8 @@ namespace AdvertisementAPI.Controllers
                     new Claim(ClaimTypes.Name, login.Username)
                 }),
                 Expires = DateTime.UtcNow.AddDays(7), // Token validity period
-                Issuer = _configuration["Jwt:Issuer"], // Setting the Issuer
-                Audience = _configuration["Jwt:Audience"], // Setting the Audience to match the Issuer for simplicity
+                Issuer = configuration["Jwt:Issuer"], // Setting the Issuer
+                Audience = configuration["Jwt:Audience"], // Setting the Audience to match the Issuer for simplicity
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
