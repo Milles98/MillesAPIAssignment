@@ -11,6 +11,7 @@ namespace AdvertisementAPI.Models
         /// <summary>
         /// Id
         /// </summary>
+        [JsonIgnore]
         public int Id { get; set; }
         /// <summary>
         /// Title

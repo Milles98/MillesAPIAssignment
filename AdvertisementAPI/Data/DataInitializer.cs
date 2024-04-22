@@ -30,9 +30,6 @@ namespace AdvertisementAPI.Data
                 .RuleFor(a => a.Title, f => Truncate(f.Commerce.ProductName(), 50))
                 .RuleFor(a => a.Description, f => Truncate(f.Commerce.ProductAdjective() + ", " + f.Commerce.ProductDescription(), 500));
 
-
-
-
             var ads = faker.Generate(200);
 
             foreach (Ad ad in ads)
