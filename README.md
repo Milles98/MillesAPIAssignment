@@ -5,6 +5,8 @@ It provides endpoints for creating, retrieving, updating, and deleting ads.
 
 The API also supports partial updates via HTTP PATCH and includes authentication and authorization mechanisms.
 
+Azure: https://advertisementapi.azurewebsites.net/swagger/index.html
+
 ## Usage
 The API provides the following endpoints:
 
