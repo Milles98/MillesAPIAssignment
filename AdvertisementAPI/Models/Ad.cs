@@ -15,13 +15,13 @@ namespace AdvertisementAPI.Models
         /// <summary>
         /// Title
         /// </summary>
-        [StringLength(15, MinimumLength = 2)]
+        [StringLength(50, MinimumLength = 2)]
         public string Title { get; set; } = null!;
 
         /// <summary>
         /// Description
         /// </summary>
-        [StringLength(50, MinimumLength = 2)]
+        [StringLength(500, MinimumLength = 2)]
         public string Description { get; set; } = null!;
     }
 }

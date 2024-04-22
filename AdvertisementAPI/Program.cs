@@ -14,6 +14,7 @@ builder.Services.AddDbContext<AdContext>(options => options.UseSqlServer(connect
 
 builder.Services.AddControllers()
     .AddNewtonsoftJson();
+builder.Services.AddTransient<DataInitializer>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -71,7 +72,13 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    scope.ServiceProvider.GetService<DataInitializer>()?.MigrateData();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
