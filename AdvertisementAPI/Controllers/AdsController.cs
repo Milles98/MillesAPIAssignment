@@ -164,7 +164,7 @@ namespace AdvertisementAPI.Controllers
                 }
 
                 context.Ads.Update(ad);
-                context.Entry(ad).State = EntityState.Modified; // Re-attach the entity to the DbContext
+                context.Entry(ad).State = EntityState.Modified;
 
                 try
                 {
