@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -111,63 +112,84 @@ namespace AdvertisementAPI.Controllers
         /// <summary>
         /// Patch an ad
         /// </summary>
+        /// <remarks>
+        /// Sample requests:
+        ///
+        ///     Replace the Title property:
+        ///     PATCH /api/ads/1
+        ///     [
+        ///         {
+        ///             "op": "replace",
+        ///             "path": "/Title",
+        ///             "value": "New Title"
+        ///         }
+        ///     ]
+        ///
+        ///     Replace the Description property:
+        ///     PATCH /api/ads/1
+        ///     [
+        ///         {
+        ///             "op": "replace",
+        ///             "path": "/Description",
+        ///             "value": "New Description"
+        ///         }
+        ///     ]
+        ///
+        /// </remarks>
         /// <param name="id"></param>
         /// <param name="patchDoc"></param>
         /// <returns></returns>
         [HttpPatch("{id:int}")]
-        public async Task<IActionResult> PatchAd(int id, JsonPatchDocument<AdInputModel>? patchDoc)
+        public async Task<IActionResult> PatchAd(int id, JsonPatchDocument<Ad> patchDoc)
         {
-            if (patchDoc == null)
+            if (patchDoc != null)
             {
-                return BadRequest();
-            }
+                var ad = await context.Ads.FindAsync(id);
 
-            var ad = await context.Ads.FindAsync(id);
-
-            if (ad == null)
-            {
-                return NotFound();
-            }
-
-            var adToPatch = new AdInputModel
-            {
-                Title = ad.Title,
-                Description = ad.Description
-            };
-
-            patchDoc.ApplyTo(adToPatch, error =>
-            {
-                var path = error.AffectedObject.GetType().Name;
-                ModelState.AddModelError(path, error.ErrorMessage);
-            });
-
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            ad.Title = adToPatch.Title;
-            ad.Description = adToPatch.Description;
-
-            try
-            {
-                await context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AdExists(id))
+                if (ad == null)
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
-            }
 
-            return NoContent();
+                patchDoc.ApplyTo(ad, error =>
+                {
+                    string errorMessage = error.ErrorMessage;
+                    string affectedPath = error.AffectedObject.GetType().Name;
+                    ModelState.AddModelError(affectedPath, errorMessage);
+                });
+
+                if (!ModelState.IsValid)
+                {
+                    return new BadRequestObjectResult(ModelState);
+                }
+
+                context.Ads.Update(ad);
+                context.Entry(ad).State = EntityState.Modified; // Re-attach the entity to the DbContext
+
+                try
+                {
+                    await context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!AdExists(id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
+
 
         /// <summary>
         /// Delete an ad
