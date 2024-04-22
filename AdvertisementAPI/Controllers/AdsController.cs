@@ -195,7 +195,7 @@ namespace AdvertisementAPI.Controllers
         }
 
         /// <summary>
-        /// Login to retrieve JWT token
+        /// Login to retrieve JWT token (execute and copy JWT token from response body)
         /// </summary>
         /// <param name="login"></param>
         /// <returns></returns>
@@ -209,15 +209,15 @@ namespace AdvertisementAPI.Controllers
             }
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(configuration["Jwt:Key"] ?? string.Empty); 
+            var key = Encoding.ASCII.GetBytes(configuration["Jwt:Key"] ?? string.Empty);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Name, login.Username)
                 }),
-                Expires = DateTime.UtcNow.AddDays(7), 
-                Issuer = configuration["Jwt:Issuer"], 
+                Expires = DateTime.UtcNow.AddDays(7),
+                Issuer = configuration["Jwt:Issuer"],
                 Audience = configuration["Jwt:Audience"],
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
