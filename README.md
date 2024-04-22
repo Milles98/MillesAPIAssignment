@@ -1,7 +1,10 @@
 # AdvertisementAPI
 This is a RESTful API built with .NET 8.0, designed to manage advertisements. 
+
 It provides endpoints for creating, retrieving, updating, and deleting ads. 
+
 The API also supports partial updates via HTTP PATCH and includes authentication and authorization mechanisms.
+
 ## Usage
 The API provides the following endpoints:
 
