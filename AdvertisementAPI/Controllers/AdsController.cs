@@ -20,7 +20,7 @@ namespace AdvertisementAPI.Controllers
     /// <param name="context"></param>
     /// <param name="configuration"></param>
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class AdsController(AdContext context, IConfiguration configuration) : ControllerBase
     {
@@ -28,7 +28,7 @@ namespace AdvertisementAPI.Controllers
         /// Get all ads
         /// </summary>
         /// <returns></returns>
-        [HttpGet("GetAll")]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<Ad>>> GetAds()
         {
             return await context.Ads.ToListAsync();
@@ -39,7 +39,7 @@ namespace AdvertisementAPI.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("GetOne/{id:int}")]
+        [HttpGet("{id:int}")]
         public async Task<ActionResult<Ad>> GetAd(int id)
         {
             var ad = await context.Ads.FindAsync(id);
@@ -57,7 +57,7 @@ namespace AdvertisementAPI.Controllers
         /// </summary>
         /// <param name="adInput"></param>
         /// <returns></returns>
-        [HttpPost("Create")]
+        [HttpPost]
         public async Task<ActionResult<Ad>> PostAd(AdInputModel adInput)
         {
             var ad = new Ad
@@ -78,7 +78,7 @@ namespace AdvertisementAPI.Controllers
         /// <param name="id"></param>
         /// <param name="adInput"></param>
         /// <returns></returns>
-        [HttpPut("Update/{id:int}")]
+        [HttpPut("{id:int}")]
         public async Task<IActionResult> PutAd(int id, AdInputModel adInput)
         {
             var ad = await context.Ads.FindAsync(id);
@@ -140,7 +140,7 @@ namespace AdvertisementAPI.Controllers
         /// <param name="id"></param>
         /// <param name="patchDoc"></param>
         /// <returns></returns>
-        [HttpPatch("Patch/{id:int}")]
+        [HttpPatch("{id:int}")]
         public async Task<IActionResult> PatchAd(int id, JsonPatchDocument<Ad> patchDoc)
         {
             if (patchDoc != null)
@@ -197,7 +197,7 @@ namespace AdvertisementAPI.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete("Delete/{id:int}")]
+        [HttpDelete("{id:int}")]
         public async Task<IActionResult> DeleteAd(int id)
         {
             var ad = await context.Ads.FindAsync(id);
