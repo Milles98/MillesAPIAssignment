@@ -19,7 +19,7 @@ namespace AdvertisementAPI.Controllers
     /// </summary>
     /// <param name="context"></param>
     /// <param name="configuration"></param>
-    //[Authorize]
+    [Authorize]
     [Route("[controller]")]
     [ApiController]
     public class AdsController(AdContext context, IConfiguration configuration) : ControllerBase
@@ -226,20 +226,22 @@ namespace AdvertisementAPI.Controllers
         [HttpPost("Login")]
         public IActionResult Login(LoginModel login)
         {
-            if (string.IsNullOrEmpty(login.Username) || string.IsNullOrEmpty(login.Password))
+            var user = context.AdUsers.SingleOrDefault(u => u.Username == login.Username && u.Password == login.Password);
+
+            if (user == null)
             {
                 return Unauthorized();
             }
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(configuration["Jwt:Key"] ?? string.Empty);
+            var key = Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Name, login.Username)
                 }),
-                Expires = DateTime.UtcNow.AddDays(7),
+                Expires = DateTime.UtcNow.AddMinutes(30),
                 Issuer = configuration["Jwt:Issuer"],
                 Audience = configuration["Jwt:Audience"],
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -247,7 +249,8 @@ namespace AdvertisementAPI.Controllers
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var jwtToken = tokenHandler.WriteToken(token);
 
-            return Ok(new LoginResult { Token = jwtToken });
+            //return Ok(new LoginResult { Token = jwtToken });
+            return Ok(jwtToken);
         }
     }
 }

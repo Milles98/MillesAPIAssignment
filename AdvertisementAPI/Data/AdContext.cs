@@ -13,5 +13,6 @@ namespace AdvertisementAPI.Data
         /// Ads
         /// </summary>
         public DbSet<Ad> Ads { get; set; }
+        public DbSet<AdUser> AdUsers { get; set; }
     }
 }
