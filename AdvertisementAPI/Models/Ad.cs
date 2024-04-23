@@ -11,6 +11,7 @@ namespace AdvertisementAPI.Models
         /// <summary>
         /// Id
         /// </summary>
+        [JsonIgnore]
         public int Id { get; set; }
         /// <summary>
         /// Title
@@ -23,5 +24,9 @@ namespace AdvertisementAPI.Models
         /// </summary>
         [StringLength(500, MinimumLength = 2)]
         public string Description { get; set; } = null!;
+
+        //public decimal Price { get; set; }
+
+        //public DateTime DateAdded { get; set; } = new DateTime();
     }
 }
