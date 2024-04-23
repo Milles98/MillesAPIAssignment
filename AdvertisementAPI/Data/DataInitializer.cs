@@ -15,6 +15,7 @@ namespace AdvertisementAPI.Data
         {
             _context.Database.Migrate();
             SeedData();
+            SeedUsers();
             _context.SaveChanges();
         }
         public void SeedData()
@@ -43,6 +44,33 @@ namespace AdvertisementAPI.Data
             if (string.IsNullOrEmpty(value)) return value;
             return value.Length <= maxLength ? value : value.Substring(0, maxLength);
         }
+
+        public void SeedUsers()
+        {
+            if (_context.AdUsers.Any())
+            {
+                return;
+            }
+
+            var user = new AdUser
+            {
+                Username = "AdsUser",
+                Password = "AdsUserPassword123!",
+                Role = "User"
+            };
+            _context.AdUsers.Add(user);
+
+            var admin = new AdUser
+            {
+                Username = "AdsAdmin",
+                Password = "AdsAdminPassword123!",
+                Role = "Admin"
+            };
+            _context.AdUsers.Add(admin);
+
+            _context.SaveChanges();
+        }
+
 
     }
 }
