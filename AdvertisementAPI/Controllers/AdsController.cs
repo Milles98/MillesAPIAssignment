@@ -27,7 +27,7 @@ namespace AdvertisementAPI.Controllers
         /// Get all ads
         /// </summary>
         /// <returns></returns>
-        [HttpGet]
+        [HttpGet("GetAll")]
         public async Task<ActionResult<IEnumerable<Ad>>> GetAds()
         {
             return await context.Ads.ToListAsync();
@@ -38,7 +38,7 @@ namespace AdvertisementAPI.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("{id:int}")]
+        [HttpGet("GetOne/{id:int}")]
         public async Task<ActionResult<Ad>> GetAd(int id)
         {
             var ad = await context.Ads.FindAsync(id);
@@ -56,7 +56,7 @@ namespace AdvertisementAPI.Controllers
         /// </summary>
         /// <param name="adInput"></param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPost("Create")]
         public async Task<ActionResult<Ad>> PostAd(AdInputModel adInput)
         {
             var ad = new Ad
@@ -77,7 +77,7 @@ namespace AdvertisementAPI.Controllers
         /// <param name="id"></param>
         /// <param name="adInput"></param>
         /// <returns></returns>
-        [HttpPut("{id:int}")]
+        [HttpPut("Update/{id:int}")]
         public async Task<IActionResult> PutAd(int id, AdInputModel adInput)
         {
             var ad = await context.Ads.FindAsync(id);
@@ -139,7 +139,7 @@ namespace AdvertisementAPI.Controllers
         /// <param name="id"></param>
         /// <param name="patchDoc"></param>
         /// <returns></returns>
-        [HttpPatch("{id:int}")]
+        [HttpPatch("Patch/{id:int}")]
         public async Task<IActionResult> PatchAd(int id, JsonPatchDocument<Ad> patchDoc)
         {
             if (patchDoc != null)
@@ -196,7 +196,7 @@ namespace AdvertisementAPI.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete("{id:int}")]
+        [HttpDelete("Delete/{id:int}")]
         public async Task<IActionResult> DeleteAd(int id)
         {
             var ad = await context.Ads.FindAsync(id);
@@ -222,7 +222,7 @@ namespace AdvertisementAPI.Controllers
         /// <param name="login"></param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpPost("login")]
+        [HttpPost("Login")]
         public IActionResult Login(LoginModel login)
         {
             if (string.IsNullOrEmpty(login.Username) || string.IsNullOrEmpty(login.Password))
