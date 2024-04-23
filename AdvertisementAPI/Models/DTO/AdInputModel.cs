@@ -1,4 +1,4 @@
-﻿namespace AdvertisementAPI.Models
+﻿namespace AdvertisementAPI.Models.DTO
 {
     /// <summary>
     /// Input model for creating an ad

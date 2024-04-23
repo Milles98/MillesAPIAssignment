@@ -1,5 +1,6 @@
 ﻿using AdvertisementAPI.Data;
 using AdvertisementAPI.Models;
+using AdvertisementAPI.Models.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
