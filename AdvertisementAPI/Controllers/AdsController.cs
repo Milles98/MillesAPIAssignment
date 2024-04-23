@@ -19,7 +19,7 @@ namespace AdvertisementAPI.Controllers
     /// </summary>
     /// <param name="context"></param>
     /// <param name="configuration"></param>
-    [Authorize]
+    //[Authorize]
     [Route("[controller]")]
     [ApiController]
     public class AdsController(AdContext context, IConfiguration configuration) : ControllerBase
@@ -46,7 +46,7 @@ namespace AdvertisementAPI.Controllers
 
             if (ad == null)
             {
-                return NotFound();
+                return BadRequest("Ad not found");
             }
 
             return Ok(ad);
@@ -149,7 +149,7 @@ namespace AdvertisementAPI.Controllers
 
                 if (ad == null)
                 {
-                    return NotFound();
+                    return BadRequest("Ad not found");
                 }
 
                 patchDoc.ApplyTo(ad, error =>
@@ -203,7 +203,7 @@ namespace AdvertisementAPI.Controllers
             var ad = await context.Ads.FindAsync(id);
             if (ad == null)
             {
-                return NotFound();
+                return BadRequest("Ad not found");
             }
 
             context.Ads.Remove(ad);
