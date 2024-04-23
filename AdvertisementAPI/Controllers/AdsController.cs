@@ -58,7 +58,7 @@ namespace AdvertisementAPI.Controllers
         /// <param name="adInput"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult<Ad>> PostAd(AdInputModel adInput)
+        public async Task<ActionResult<Ad>> PostAd(AdDTO adInput)
         {
             var ad = new Ad
             {
@@ -79,7 +79,7 @@ namespace AdvertisementAPI.Controllers
         /// <param name="adInput"></param>
         /// <returns></returns>
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> PutAd(int id, AdInputModel adInput)
+        public async Task<IActionResult> PutAd(int id, AdDTO adInput)
         {
             var ad = await context.Ads.FindAsync(id);
 
