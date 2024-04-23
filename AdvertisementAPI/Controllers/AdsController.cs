@@ -193,11 +193,12 @@ namespace AdvertisementAPI.Controllers
 
 
         /// <summary>
-        /// Delete an ad
+        /// Delete an ad (Admin only)
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("{id:int}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteAd(int id)
         {
             var ad = await context.Ads.FindAsync(id);
