@@ -27,6 +27,6 @@ namespace AdvertisementAPI.Models
 
         //public decimal Price { get; set; }
 
-        //public DateTime DateAdded { get; set; } = new DateTime();
+        //public DateTime DateAdded { get; set; } 
     }
 }
