@@ -69,7 +69,8 @@ namespace AdvertisementAPI.Controllers
             context.Ads.Add(ad);
             await context.SaveChangesAsync();
 
-            return CreatedAtAction("GetAd", new { id = ad.Id }, ad);
+            //return CreatedAtAction("GetAd", new { id = ad.Id }, ad);
+            return Ok(ad);
         }
 
         /// <summary>
@@ -107,7 +108,7 @@ namespace AdvertisementAPI.Controllers
                 }
             }
 
-            return Ok();
+            return Ok(ad);
         }
 
         /// <summary>
@@ -183,7 +184,7 @@ namespace AdvertisementAPI.Controllers
                     }
                 }
 
-                return Ok();
+                return Ok(ad);
             }
             else
             {
@@ -210,7 +211,7 @@ namespace AdvertisementAPI.Controllers
             context.Ads.Remove(ad);
             await context.SaveChangesAsync();
 
-            return Ok();
+            return Ok(await context.Ads.ToListAsync());
         }
 
         private bool AdExists(int id)
@@ -240,7 +241,8 @@ namespace AdvertisementAPI.Controllers
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, login.Username)
+                    new Claim(ClaimTypes.Name, login.Username),
+                    new Claim(ClaimTypes.Role, user.Role)
                 }),
                 Expires = DateTime.UtcNow.AddMinutes(30),
                 Issuer = configuration["Jwt:Issuer"],
