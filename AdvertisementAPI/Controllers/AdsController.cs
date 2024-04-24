@@ -77,11 +77,13 @@ namespace AdvertisementAPI.Controllers
         }
 
         /// <summary>
-        /// Create a new ad
+        /// Create a new ad (Admin &amp; User)
         /// </summary>
         /// <param name="adInput"></param>
         /// <returns></returns>
         [HttpPost]
+        [Authorize(Roles = "Admin, User")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
         public async Task<ActionResult<Ad>> PostAd(AdDTO adInput)
         {
             var ad = new Ad
@@ -96,17 +98,18 @@ namespace AdvertisementAPI.Controllers
             context.Ads.Add(ad);
             await context.SaveChangesAsync();
 
-            //return CreatedAtAction("GetAd", new { id = ad.Id }, ad);
-            return Ok(ad);
+            return CreatedAtAction("GetAd", new { id = ad.Id }, ad);
+            //return Ok(ad);
         }
 
         /// <summary>
-        /// Update an ad
+        /// Update an ad (Admin &amp; User)
         /// </summary>
         /// <param name="id"></param>
         /// <param name="adInput"></param>
         /// <returns></returns>
         [HttpPut("{id:int}")]
+        [Authorize(Roles = "Admin, User")]
         public async Task<IActionResult> PutAd(int id, AdDTO adInput)
         {
             var ad = await context.Ads.FindAsync(id);
@@ -142,7 +145,7 @@ namespace AdvertisementAPI.Controllers
         }
 
         /// <summary>
-        /// Patch an ad
+        /// Patch an ad (Admin &amp; User)
         /// </summary>
         /// <remarks>
         /// Sample requests:
@@ -193,6 +196,7 @@ namespace AdvertisementAPI.Controllers
         /// <param name="patchDoc"></param>
         /// <returns></returns>
         [HttpPatch("{id:int}")]
+        [Authorize(Roles = "Admin, User")]
         public async Task<IActionResult> PatchAd(int id, JsonPatchDocument<Ad> patchDoc)
         {
             if (patchDoc != null)
@@ -292,8 +296,23 @@ namespace AdvertisementAPI.Controllers
         }
 
         /// <summary>
-        /// Login to retrieve JWT token (execute and copy JWT token from response body)
+        /// Login to retrieve JWT token
         /// </summary>
+        /// <remarks>
+        /// Available logins for testing:
+        /// 
+        ///     Admin:
+        ///         {
+        ///             "username": "AdsAdmin",
+        ///             "password": "AdsAdminPassword123!",
+        ///         }
+        ///         
+        ///     User:
+        ///         {
+        ///             "username": "AdsUser",
+        ///             "password": "AdsUserPassword123!",
+        ///         }
+        /// </remarks>
         /// <param name="login"></param>
         /// <returns></returns>
         [AllowAnonymous]
