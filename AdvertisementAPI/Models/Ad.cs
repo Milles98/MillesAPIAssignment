@@ -25,10 +25,10 @@ namespace AdvertisementAPI.Models
         [StringLength(500, MinimumLength = 2)]
         public string Description { get; set; } = null!;
 
-        //public decimal Price { get; set; }
+        public decimal Price { get; set; }
 
-        //public DateTime DateAdded { get; set; } 
+        public DateOnly DateAdded { get; set; }
 
-        //public int IsDeleted { get; set; }
+        public int IsDeleted { get; set; }
     }
 }
