@@ -151,53 +151,40 @@ namespace AdvertisementAPI.Controllers
         /// Sample requests:
         ///
         ///     Replace the Title property:
-        ///     PATCH /api/ads/1
         ///     [
         ///         {
-        ///             "op": "replace",
         ///             "path": "/Title",
-        ///             "value": "New Title"
+        ///             "op": "replace",
+        ///             "value": "Type new title here"
         ///         }
         ///     ]
         ///
         ///     Replace the Description property:
-        ///     PATCH /api/ads/1
         ///     [
         ///         {
-        ///             "op": "replace",
         ///             "path": "/Description",
-        ///             "value": "New Description"
+        ///             "op": "replace",
+        ///             "value": "Type new description here"
         ///         }
         ///     ]
         ///     
         ///     Replace the Price property:
-        ///     PATCH /api/ads/1
         ///     [
         ///         {
-        ///             "op": "replace",
         ///             "path": "/Price",
-        ///             "value": "New Price"
-        ///         }
-        ///     ]
-        ///     
-        ///     Replace the DateAdded property:
-        ///     PATCH /api/ads/1
-        ///     [
-        ///         {
         ///             "op": "replace",
-        ///             "path": "/DateAdded",
-        ///             "value": "2024-05-25"
+        ///             "value": "Example: 399"
         ///         }
         ///     ]
         ///     
-        /// 
+        /// Note: The "operationType" and "from" fields are part of the JSON Patch standard but are not used in this API. Please do not include them in your requests.
         /// </remarks>
         /// <param name="id"></param>
         /// <param name="patchDoc"></param>
         /// <returns></returns>
         [HttpPatch("{id:int}")]
         [Authorize(Roles = "Admin, User")]
-        public async Task<IActionResult> PatchAd(int id, JsonPatchDocument<Ad> patchDoc)
+        public async Task<IActionResult> PatchAd(int id, JsonPatchDocument<AdDTO> patchDoc)
         {
             if (patchDoc != null)
             {
@@ -208,7 +195,14 @@ namespace AdvertisementAPI.Controllers
                     return BadRequest("Ad not found");
                 }
 
-                patchDoc.ApplyTo(ad, error =>
+                var adDto = new AdDTO
+                {
+                    Title = ad.Title,
+                    Description = ad.Description,
+                    Price = ad.Price
+                };
+
+                patchDoc.ApplyTo(adDto, error =>
                 {
                     string errorMessage = error.ErrorMessage;
                     string affectedPath = error.AffectedObject.GetType().Name;
@@ -219,6 +213,10 @@ namespace AdvertisementAPI.Controllers
                 {
                     return new BadRequestObjectResult(ModelState);
                 }
+
+                ad.Title = adDto.Title;
+                ad.Description = adDto.Description;
+                ad.Price = adDto.Price;
 
                 context.Ads.Update(ad);
                 context.Entry(ad).State = EntityState.Modified;
