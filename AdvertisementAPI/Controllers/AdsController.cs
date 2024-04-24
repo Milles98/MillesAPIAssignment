@@ -19,7 +19,7 @@ namespace AdvertisementAPI.Controllers
     /// </summary>
     /// <param name="context"></param>
     /// <param name="configuration"></param>
-    [Authorize]
+    //[Authorize]
     [Route("[controller]")]
     [ApiController]
     public class AdsController(AdContext context, IConfiguration configuration) : ControllerBase
@@ -63,7 +63,10 @@ namespace AdvertisementAPI.Controllers
             var ad = new Ad
             {
                 Title = adInput.Title,
-                Description = adInput.Description
+                Description = adInput.Description,
+                Price = adInput.Price,
+                DateAdded = DateOnly.FromDateTime(DateTime.Today),
+                IsDeleted = 0
             };
 
             context.Ads.Add(ad);
@@ -91,6 +94,9 @@ namespace AdvertisementAPI.Controllers
 
             ad.Title = adInput.Title;
             ad.Description = adInput.Description;
+            ad.Price = adInput.Price;
+            ad.DateAdded = DateOnly.FromDateTime(DateTime.Today);
+            //ad.IsDeleted = 0;
 
             try
             {
@@ -136,7 +142,28 @@ namespace AdvertisementAPI.Controllers
         ///             "value": "New Description"
         ///         }
         ///     ]
-        ///
+        ///     
+        ///     Replace the Price property:
+        ///     PATCH /api/ads/1
+        ///     [
+        ///         {
+        ///             "op": "replace",
+        ///             "path": "/Price",
+        ///             "value": "New Price"
+        ///         }
+        ///     ]
+        ///     
+        ///     Replace the DateAdded property:
+        ///     PATCH /api/ads/1
+        ///     [
+        ///         {
+        ///             "op": "replace",
+        ///             "path": "/DateAdded",
+        ///             "value": "2024-05-25"
+        ///         }
+        ///     ]
+        ///     
+        /// 
         /// </remarks>
         /// <param name="id"></param>
         /// <param name="patchDoc"></param>
@@ -211,7 +238,7 @@ namespace AdvertisementAPI.Controllers
             context.Ads.Remove(ad);
             await context.SaveChangesAsync();
 
-            return Ok(await context.Ads.ToListAsync());
+            return Ok(ad);
         }
 
         private bool AdExists(int id)

@@ -29,7 +29,10 @@ namespace AdvertisementAPI.Data
 
             var faker = new Faker<Ad>()
                 .RuleFor(a => a.Title, f => Truncate(f.Commerce.ProductName(), 50))
-                .RuleFor(a => a.Description, f => Truncate(f.Commerce.ProductAdjective() + ", " + f.Commerce.ProductDescription(), 500));
+                .RuleFor(a => a.Description, f => Truncate(f.Commerce.ProductAdjective() + ", " + f.Commerce.ProductDescription(), 500))
+                .RuleFor(a => a.Price, f => f.Random.Decimal(1.0m, 1000.0m))
+                .RuleFor(a => a.DateAdded, f => DateOnly.FromDateTime(f.Date.Past(10)))
+                .RuleFor(a => a.IsDeleted, f => f.Random.Int(0, 1));
 
             var ads = faker.Generate(200);
 
