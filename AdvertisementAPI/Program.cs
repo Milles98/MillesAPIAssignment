@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Net;
 using System.Reflection;
 using System.Text;
 
@@ -89,6 +90,25 @@ app.UseSwaggerUI(c =>
 });
 
 app.UseHttpsRedirection();
+
+app.UseStatusCodePages(async context =>
+{
+    var request = context.HttpContext.Request;
+    var response = context.HttpContext.Response;
+
+    if (response.StatusCode == (int)HttpStatusCode.Unauthorized)
+    {
+        response.ContentType = "text/plain";
+        await response.WriteAsync("You are Unauthorized. To solve this, please login with token or contact Admin.");
+    }
+    else if (response.StatusCode == (int)HttpStatusCode.Forbidden)
+    {
+        response.ContentType = "text/plain";
+        await response.WriteAsync("Error! This action is strictly for Admin.");
+    }
+});
+
+
 app.UseAuthentication();
 app.UseAuthorization();
 
