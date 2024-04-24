@@ -35,6 +35,30 @@ namespace AdvertisementAPI.Controllers
         }
 
         /// <summary>
+        /// Get all deleted ads
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("DeletedAds")]
+        public async Task<ActionResult<IEnumerable<Ad>>> GetDeletedAds()
+        {
+            return await context.Ads
+                .Where(a => a.IsDeleted == 1)
+                .ToListAsync();
+        }
+
+        /// <summary>
+        /// Get all active ads
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("ActiveAds")]
+        public async Task<ActionResult<IEnumerable<Ad>>> GetActiveAds()
+        {
+            return await context.Ads
+                .Where(a => a.IsDeleted == 0)
+                .ToListAsync();
+        }
+
+        /// <summary>
         /// Get a specific ad
         /// </summary>
         /// <param name="id"></param>
@@ -221,7 +245,7 @@ namespace AdvertisementAPI.Controllers
 
 
         /// <summary>
-        /// Delete an ad (Admin only)
+        /// Permanently delete an ad (Admin only)
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -236,6 +260,27 @@ namespace AdvertisementAPI.Controllers
             }
 
             context.Ads.Remove(ad);
+            await context.SaveChangesAsync();
+
+            return Ok(ad);
+        }
+
+        /// <summary>
+        /// Soft delete an ad (Admin only)
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete("SoftDelete/{id:int}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> SoftDeleteAd(int id)
+        {
+            var ad = await context.Ads.FindAsync(id);
+            if (ad == null)
+            {
+                return BadRequest("Ad not found");
+            }
+
+            ad.IsDeleted = 1;
             await context.SaveChangesAsync();
 
             return Ok(ad);
