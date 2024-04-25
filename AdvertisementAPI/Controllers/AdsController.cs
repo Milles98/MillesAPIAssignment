@@ -84,7 +84,7 @@ namespace AdvertisementAPI.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin, User")]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<Ad>> PostAd(AdDTO adInput)
+        public async Task<ActionResult<Ad>> PostAd(AdDto adInput)
         {
             var ad = new Ad
             {
@@ -110,7 +110,7 @@ namespace AdvertisementAPI.Controllers
         /// <returns></returns>
         [HttpPut("{id:int}")]
         [Authorize(Roles = "Admin, User")]
-        public async Task<IActionResult> PutAd(int id, AdDTO adInput)
+        public async Task<IActionResult> PutAd(int id, AdDto adInput)
         {
             var ad = await context.Ads.FindAsync(id);
 
@@ -184,7 +184,7 @@ namespace AdvertisementAPI.Controllers
         /// <returns></returns>
         [HttpPatch("{id:int}")]
         [Authorize(Roles = "Admin, User")]
-        public async Task<IActionResult> PatchAd(int id, JsonPatchDocument<AdDTO> patchDoc)
+        public async Task<IActionResult> PatchAd(int id, JsonPatchDocument<AdDto> patchDoc)
         {
             if (patchDoc != null)
             {
@@ -195,7 +195,7 @@ namespace AdvertisementAPI.Controllers
                     return BadRequest("Ad not found");
                 }
 
-                var adDto = new AdDTO
+                var adDto = new AdDto
                 {
                     Title = ad.Title,
                     Description = ad.Description,
