@@ -10,6 +10,7 @@ Azure: https://advertisementapi.azurewebsites.net/swagger/index.html
 Available logins for testing JWT:
 
 Admin:
+    
     {
     
         "username": "AdsAdmin",
@@ -19,6 +20,7 @@ Admin:
     }
     
 User:
+    
     {
     
         "username": "AdsUser",
