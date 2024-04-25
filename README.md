@@ -11,14 +11,20 @@ Available logins for testing JWT:
 
 Admin:
     {
+    
         "username": "AdsAdmin",
+        
         "password": "AdsAdminPassword123!",
+        
     }
     
 User:
     {
+    
         "username": "AdsUser",
+        
         "password": "AdsUserPassword123!",
+        
     }
 
 ## Usage
