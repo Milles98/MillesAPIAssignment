@@ -27,6 +27,9 @@ namespace AdvertisementAPI.Controllers
         /// <summary>
         /// Get all ads
         /// </summary>
+        /// <return>
+        /// A list of all ads
+        /// </return>
         /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Ad>>> GetAds()
@@ -37,7 +40,9 @@ namespace AdvertisementAPI.Controllers
         /// <summary>
         /// Get all deleted ads
         /// </summary>
-        /// <returns></returns>
+        /// <returns>
+        /// A list of all deleted ads
+        /// </returns>
         [HttpGet("DeletedAds")]
         public async Task<ActionResult<IEnumerable<Ad>>> GetDeletedAds()
         {
@@ -49,7 +54,9 @@ namespace AdvertisementAPI.Controllers
         /// <summary>
         /// Get all active ads
         /// </summary>
-        /// <returns></returns>
+        /// <returns>
+        /// A list of all active ads
+        /// </returns>
         [HttpGet("ActiveAds")]
         public async Task<ActionResult<IEnumerable<Ad>>> GetActiveAds()
         {
@@ -62,7 +69,9 @@ namespace AdvertisementAPI.Controllers
         /// Get a specific ad
         /// </summary>
         /// <param name="id"></param>
-        /// <returns></returns>
+        /// <returns>
+        /// A specific ad
+        /// </returns>
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Ad>> GetAd(int id)
         {
@@ -80,7 +89,9 @@ namespace AdvertisementAPI.Controllers
         /// Create a new ad (Admin &amp; User)
         /// </summary>
         /// <param name="adInput"></param>
-        /// <returns></returns>
+        /// <returns>
+        /// A newly created ad
+        /// </returns>
         [HttpPost]
         [Authorize(Roles = "Admin, User")]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -107,7 +118,9 @@ namespace AdvertisementAPI.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <param name="adInput"></param>
-        /// <returns></returns>
+        /// <returns>
+        /// An updated ad
+        /// </returns>
         [HttpPut("{id:int}")]
         [Authorize(Roles = "Admin, User")]
         public async Task<IActionResult> PutAd(int id, AdDto adInput)
@@ -181,7 +194,9 @@ namespace AdvertisementAPI.Controllers
         /// </remarks>
         /// <param name="id"></param>
         /// <param name="patchDoc"></param>
-        /// <returns></returns>
+        /// <returns>
+        /// A partially updated ad
+        /// </returns>
         [HttpPatch("{id:int}")]
         [Authorize(Roles = "Admin, User")]
         public async Task<IActionResult> PatchAd(int id, JsonPatchDocument<AdDto> patchDoc)
@@ -250,7 +265,9 @@ namespace AdvertisementAPI.Controllers
         /// Permanently delete an ad (Admin only)
         /// </summary>
         /// <param name="id"></param>
-        /// <returns></returns>
+        /// <returns>
+        /// A deleted ad
+        /// </returns>
         [HttpDelete("{id:int}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteAd(int id)
@@ -271,7 +288,9 @@ namespace AdvertisementAPI.Controllers
         /// Soft delete an ad (Admin only)
         /// </summary>
         /// <param name="id"></param>
-        /// <returns></returns>
+        /// <returns>
+        /// A soft deleted ad
+        /// </returns>
         [HttpDelete("SoftDelete/{id:int}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> SoftDeleteAd(int id)
@@ -312,7 +331,9 @@ namespace AdvertisementAPI.Controllers
         ///         }
         /// </remarks>
         /// <param name="login"></param>
-        /// <returns></returns>
+        /// <returns>
+        /// A JWT token
+        /// </returns>
         [AllowAnonymous]
         [HttpPost("Login")]
         public IActionResult Login(LoginModel login)

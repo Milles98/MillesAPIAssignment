@@ -21,7 +21,18 @@ builder.Services.AddTransient<DataInitializer>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Milles API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Milles API",
+        Version = "v1",
+        Description = @"This API is created for the purpose of learning ASP.NET Core Web API. 
+                        It is a simple API that allows you to perform CRUD operations on Advertisement data.",
+        Contact = new OpenApiContact
+        {
+            Name = "Mille Elfver",
+            Email = "mille.elfver98@gmail.com"
+        }
+    });
 
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
@@ -56,8 +67,6 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 // I Configure-metoden i Startup.cs
-
-
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
