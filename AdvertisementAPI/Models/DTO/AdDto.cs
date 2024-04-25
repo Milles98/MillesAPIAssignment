@@ -3,7 +3,7 @@
     /// <summary>
     /// Input model for creating an ad
     /// </summary>
-    public class AdDTO
+    public class AdDto
     {
         /// <summary>
         /// Title
