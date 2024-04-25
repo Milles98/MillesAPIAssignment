@@ -7,8 +7,7 @@ The API also supports partial updates via HTTP PATCH and includes authentication
 
 Azure: https://advertisementapi.azurewebsites.net/swagger/index.html
 
-Available logins for testing JWT:
-
+### Available logins for testing JWT:
 Admin:
     
     {
