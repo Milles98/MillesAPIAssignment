@@ -18,6 +18,6 @@
 
         //public DateOnly DateAdded { get; set; }
 
-        //public int IsDeleted { get; set; }
+        public int IsDeleted { get; set; }
     }
 }
