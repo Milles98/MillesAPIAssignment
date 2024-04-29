@@ -31,19 +31,19 @@ User:
 ## Usage
 The API provides the following endpoints:
 
-•	POST /api/ads: Create a new ad. The body of the request should be a JSON object with Title and Description fields.
+•	POST /ads: Create a new ad. The body of the request should be a JSON object with Title and Description fields.
 
-•	GET /api/ads: Get a list of all ads.
+•	GET /ads: Get a list of all ads.
 
-•	GET /api/ads/{id}: Get the details of a specific ad.
+•	GET /ads/{id}: Get the details of a specific ad.
 
-•	PUT /api/ads/{id}: Update a specific ad. The body of the request should be a JSON object with the fields to be updated.
+•	PUT /ads/{id}: Update a specific ad. The body of the request should be a JSON object with the fields to be updated.
 
-•	PATCH /api/ads/{id}: Partially update a specific ad. The body of the request should be a JSON array of patch operations.
+•	PATCH /ads/{id}: Partially update a specific ad. The body of the request should be a JSON array of patch operations.
 
-•	DELETE /api/ads/{id}: Delete a specific ad.
+•	DELETE /ads/{id}: Delete a specific ad.
 
-•	POST /api/ads/login: Authenticate a user and retrieve a JWT token.
+•	POST /ads/login: Authenticate a user and retrieve a JWT token.
 
 ## Authentication and Authorization
 The API uses JWT for authentication. To authenticate, send a POST request to /api/ads/login with a JSON object containing Username and Password fields. 
