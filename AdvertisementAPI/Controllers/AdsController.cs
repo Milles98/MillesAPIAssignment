@@ -27,42 +27,30 @@ namespace AdvertisementAPI.Controllers
         /// <summary>
         /// Get all ads
         /// </summary>
+        /// <remarks>
+        /// Type active or deleted in the status parameter to filter the ads by status. Otherwise leave empty to see all ads.
+        /// </remarks>
         /// <return>
         /// A list of all ads
         /// </return>
-        /// <returns></returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Ad>>> GetAds()
+        public async Task<ActionResult<IEnumerable<Ad>>> GetAds([FromQuery] string status = "")
         {
-            return await context.Ads.ToListAsync();
-        }
+            IQueryable<Ad> query = context.Ads;
 
-        /// <summary>
-        /// Get all deleted ads
-        /// </summary>
-        /// <returns>
-        /// A list of all deleted ads
-        /// </returns>
-        [HttpGet("DeletedAds")]
-        public async Task<ActionResult<IEnumerable<Ad>>> GetDeletedAds()
-        {
-            return await context.Ads
-                .Where(a => a.IsDeleted == 1)
-                .ToListAsync();
-        }
+            if (!string.IsNullOrEmpty(status))
+            {
+                if (status.ToLower() == "active")
+                {
+                    query = query.Where(a => a.IsDeleted == 0);
+                }
+                else if (status.ToLower() == "deleted")
+                {
+                    query = query.Where(a => a.IsDeleted == 1);
+                }
+            }
 
-        /// <summary>
-        /// Get all active ads
-        /// </summary>
-        /// <returns>
-        /// A list of all active ads
-        /// </returns>
-        [HttpGet("ActiveAds")]
-        public async Task<ActionResult<IEnumerable<Ad>>> GetActiveAds()
-        {
-            return await context.Ads
-                .Where(a => a.IsDeleted == 0)
-                .ToListAsync();
+            return await query.ToListAsync();
         }
 
         /// <summary>
@@ -113,14 +101,16 @@ namespace AdvertisementAPI.Controllers
             //return Ok(ad);
         }
 
+
         /// <summary>
-        /// Update an ad (Admin &amp; User)
+        /// Update an ad (Admin &amp; User) Can also be used to soft delete an ad
         /// </summary>
+        /// <remarks>
+        /// IsDeleted functionality is only available for Admins. Users can only update the Title, Description, and Price properties.
+        /// </remarks>
         /// <param name="id"></param>
         /// <param name="adInput"></param>
-        /// <returns>
-        /// An updated ad
-        /// </returns>
+        /// <returns></returns>
         [HttpPut("{id:int}")]
         [Authorize(Roles = "Admin, User")]
         public async Task<IActionResult> PutAd(int id, AdDto adInput)
@@ -132,11 +122,19 @@ namespace AdvertisementAPI.Controllers
                 return NotFound();
             }
 
+            if (adInput.IsDeleted == 1)
+            {
+                if (!User.IsInRole("Admin"))
+                {
+                    return Forbid();
+                }
+            }
+
             ad.Title = adInput.Title;
             ad.Description = adInput.Description;
             ad.Price = adInput.Price;
             ad.DateAdded = DateOnly.FromDateTime(DateTime.Today);
-            //ad.IsDeleted = 0;
+            ad.IsDeleted = adInput.IsDeleted;
 
             try
             {
@@ -156,6 +154,7 @@ namespace AdvertisementAPI.Controllers
 
             return Ok(ad);
         }
+
 
         /// <summary>
         /// Patch an ad (Admin &amp; User)
@@ -279,29 +278,6 @@ namespace AdvertisementAPI.Controllers
             }
 
             context.Ads.Remove(ad);
-            await context.SaveChangesAsync();
-
-            return Ok(ad);
-        }
-
-        /// <summary>
-        /// Soft delete an ad (Admin only)
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns>
-        /// A soft deleted ad
-        /// </returns>
-        [HttpDelete("SoftDelete/{id:int}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> SoftDeleteAd(int id)
-        {
-            var ad = await context.Ads.FindAsync(id);
-            if (ad == null)
-            {
-                return BadRequest("Ad not found");
-            }
-
-            ad.IsDeleted = 1;
             await context.SaveChangesAsync();
 
             return Ok(ad);
