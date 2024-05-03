@@ -83,7 +83,7 @@ namespace AdvertisementAPI.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin, User")]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        public async Task<ActionResult<Ad>> PostAd(AdDto adInput)
+        public async Task<ActionResult<Ad>> PostAd(AdPostDTO adInput)
         {
             var ad = new Ad
             {
