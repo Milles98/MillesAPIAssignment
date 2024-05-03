@@ -1,6 +1,7 @@
 ﻿using AdvertisementAPI.Data;
 using AdvertisementAPI.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -9,6 +10,7 @@ using System.Text;
 
 namespace AdvertisementAPI.Controllers
 {
+    [EnableCors("AllowAll")]
     [Route("[controller]")]
     [ApiController]
     public class LoginController : ControllerBase

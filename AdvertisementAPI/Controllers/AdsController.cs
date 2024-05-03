@@ -2,6 +2,7 @@
 using AdvertisementAPI.Models;
 using AdvertisementAPI.Models.DTO;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -20,6 +21,7 @@ namespace AdvertisementAPI.Controllers
     /// <param name="context"></param>
     /// <param name="configuration"></param>
     //[Authorize]
+    [EnableCors("AllowAll")]
     [Route("[controller]")]
     [ApiController]
     public class AdsController(AdContext context, IConfiguration configuration) : ControllerBase
