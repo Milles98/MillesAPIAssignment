@@ -15,6 +15,14 @@ builder.Services.AddDbContext<AdContext>(options => options.UseSqlServer(connect
 
 builder.Services.AddControllers()
     .AddNewtonsoftJson();
+
+builder.Services.AddCors(o => o.AddPolicy("AllowAll", builder =>
+{
+    builder.AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader();
+}));
+
 builder.Services.AddTransient<DataInitializer>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -117,6 +125,7 @@ app.UseStatusCodePages(async context =>
     }
 });
 
+app.UseCors("AllowAll");
 
 app.UseAuthentication();
 app.UseAuthorization();
