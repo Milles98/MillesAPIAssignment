@@ -1,6 +1,8 @@
 using AdvertisementAPI.Data;
+using Azure.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Net;
@@ -10,8 +12,23 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<AdContext>(options => options.UseSqlServer(connectionString));
+
+builder.Services.AddDbContext<AdContext>(options => options.UseSqlServer(builder.Configuration["BankAppDataConnectionString"]));
+
+var vaultUri = new Uri($"{builder.Configuration["KeyVault"]!}");
+if (builder.Environment.IsDevelopment())
+{
+    builder.Configuration.AddAzureKeyVault(
+        vaultUri,
+        new VisualStudioCredential());
+}
+else
+{
+    builder.Configuration.AddAzureKeyVault(
+        vaultUri,
+        new DefaultAzureCredential());
+}
+
 
 builder.Services.AddControllers()
     .AddNewtonsoftJson();
